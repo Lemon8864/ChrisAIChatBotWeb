@@ -1,0 +1,25 @@
+{
+  "__说明": "复制本文件为 server/config/character.json 后再填写。以双下划线开头的说明字段只是注释，服务端会忽略。",
+  "__字段说明": {
+    "id": "角色唯一标识，只建议使用英文字母、数字、下划线或短横线。它会用于区分本地缓存和后端历史。",
+    "displayName": "助手在页面和导出记录中显示的名称。",
+    "userLabel": "用户在页面和导出记录中显示的称呼。",
+    "appTitle": "浏览器标题、顶部品牌标题和启动日志中显示的应用名称。",
+    "moduleLabel": "顶部副标题，用来描述当前角色模块或项目名称。",
+    "bootText": "登录后的过渡加载文字。",
+    "avatarUrl": "助手头像地址。可以填 public 下的相对路径，例如 ./assets/avatar.png，也可以填 HTTPS 图片地址；留空则显示名称首字母。",
+    "initialAssistantMessage": "没有历史记录时前端显示的第一条助手消息。",
+    "hiddenStateReminder": "每次用户消息后附加给模型的隐藏提醒，可用于提醒输出格式；不需要则留空。",
+    "systemPrompt": "发送给模型的系统提示词。请在这里填写完整角色设定、语气、边界、输出格式和安全规则。"
+  },
+  "id": "assistant",
+  "displayName": "Assistant",
+  "userLabel": "User",
+  "appTitle": "AI Chat Terminal",
+  "moduleLabel": "CUSTOM ASSISTANT MODULE",
+  "bootText": "Conversation module is ready.",
+  "avatarUrl": "",
+  "initialAssistantMessage": "Hello, I am your configurable assistant. Replace this opening message in server/config/character.json.",
+  "hiddenStateReminder": "",
+  "systemPrompt": "You are a helpful assistant. Replace this prompt with your own role, rules, tone, boundaries, and output format before deployment."
+}

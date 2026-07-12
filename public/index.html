@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>AI Chat Terminal</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body class="view-login">
+  <!-- 登录/注册/重置界面：独立界面 -->
+  <div id="accessGate" class="app-view access-gate active">
+    <div class="login-slideshow" aria-hidden="true">
+      <span class="login-slide slide-one"></span>
+      <span class="login-slide slide-two"></span>
+      <span class="login-slide slide-three"></span>
+    </div>
+
+    <div class="access-card" id="authCard">
+      <div class="access-logo">P</div>
+      <div class="access-title">AI CHAT TERMINAL</div>
+      <div class="access-subtitle" id="authSubtitle">登录以继续</div>
+
+      <div id="authNormal">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin">登录</button>
+          <button class="auth-tab" id="tabRegister">注册</button>
+        </div>
+        <input id="usernameInput" class="access-input" type="text" placeholder="用户名" autocomplete="username" />
+        <input id="passwordInput" class="access-input" type="password" placeholder="密码" autocomplete="current-password" />
+        <button id="authSubmitBtn" class="access-button">登录</button>
+        <div class="auth-forgot">
+          <a id="forgotPasswordLink" href="javascript:void(0)">忘记密码？管理员重置</a>
+        </div>
+      </div>
+
+      <div id="authReset" style="display:none;">
+        <div class="reset-title">管理员重置密码</div>
+        <input id="resetAdminKeyInput" class="access-input" type="password" placeholder="管理员密钥" />
+        <input id="resetUsernameInput" class="access-input" type="text" placeholder="用户名" />
+        <input id="resetNewPasswordInput" class="access-input" type="password" placeholder="新密码" />
+        <button id="resetSubmitBtn" class="access-button">重置密码</button>
+        <div class="auth-forgot">
+          <a id="backToLoginLink" href="javascript:void(0)">返回登录</a>
+        </div>
+      </div>
+
+      <div id="authError" class="access-error"></div>
+    </div>
+  </div>
+
+  <!-- 登录成功后的过渡加载界面：独立界面 -->
+  <div id="bootLoader" class="app-view boot-loader">
+    <div class="glitch-frame">
+      <div class="glitch-label">AI CHAT LINK</div>
+      <div class="glitch-text" data-text="Conversation module is ready.">Conversation module is ready.</div>
+      <div class="glitch-bar">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 聊天界面：独立界面 -->
+  <div id="chatShell" class="app-view terminal">
+    <header class="terminal-header">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div class="brand-text">
+          <h1>AI CHAT TERMINAL</h1>
+          <p>CUSTOM ASSISTANT MODULE</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="avatarBtn" class="header-button">上传头像</button>
+        <button id="downloadBtn" class="header-button">下载TXT</button>
+        <button id="downloadJsonBtn" class="header-button">下载JSON</button>
+        <button id="importBtn" class="header-button">导入记录</button>
+        <button id="clearBtn" class="header-button danger">清空记录</button>
+        <button id="resetUsageBtn" class="header-button" style="display:none;" title="重置用量">重置用量</button>
+        <button id="lockBtn" class="header-button">锁定终端</button>
+      </div>
+    </header>
+
+    <section class="token-panel">
+      <div class="token-card">
+        <div class="token-card-left">
+          <div class="token-label">今日剩余 Token</div>
+          <div class="token-value" id="tokenRemainingBig">-</div>
+        </div>
+        <div class="token-card-right">
+          <div class="token-meta">
+            <span>已用 <strong id="tokenUsed">-</strong></span>
+            <span>上限 <strong id="tokenLimit">30,000</strong></span>
+          </div>
+          <div class="token-progress">
+            <span id="tokenProgressFill"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-panel">
+      <label class="setting-item">
+        <span>模型</span>
+        <select id="modelSelect">
+          <option value="your-model-name">your-model-name</option>
+        </select>
+      </label>
+      <label class="setting-item">
+        <span>温度</span>
+        <input id="temperatureInput" type="number" min="0" max="2" step="0.1" value="0.8" />
+      </label>
+      <div class="setting-hint">当前参数会随每次请求发送给配置的模型接口。</div>
+    </section>
+
+    <main id="chatLog" class="chat-log">
+      <div class="system-line"><span class="system-prefix">›</span>AI Chat Terminal 已启动。</div>
+      <div class="system-line"><span class="system-prefix">›</span>输入内容后按 Enter 发送，Shift + Enter 换行。</div>
+      <div class="system-line"><span class="system-prefix">›</span>输入 /clear 可清空当前本地记录。</div>
+    </main>
+
+    <footer class="input-area">
+      <div class="input-prefix">User &gt;</div>
+      <textarea id="messageInput" class="message-input" placeholder="输入消息……" rows="1"></textarea>
+      <button id="sendBtn" class="send-button">发送</button>
+    </footer>
+
+    <div class="status-bar">
+      <span><span class="status-dot"></span> LINK ESTABLISHED</span>
+      <span>
+        MSG <span id="messageCount">0</span>
+        | LAST TOKENS <span id="lastTokenCount">0</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 管理员重置用量弹窗 -->
+  <div id="resetUsageDialog" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <h3>管理员重置用量</h3>
+      <input id="resetUsageAdminKey" type="password" placeholder="管理员密钥" />
+      <input id="resetUsageUsername" type="text" placeholder="目标用户名" />
+      <div class="modal-actions">
+        <button id="resetUsageConfirm" class="modal-btn primary">确认重置</button>
+        <button id="resetUsageCancel" class="modal-btn">取消</button>
+      </div>
+      <div id="resetUsageError" class="access-error" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <input id="fileInput" type="file" accept=".txt,.json" hidden />
+  <input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+  <script src="./app.js"></script>
+
+</body>
+</html>
